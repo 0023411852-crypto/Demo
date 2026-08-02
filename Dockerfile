@@ -2,14 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Copy sln and csproj to restore dependencies
-COPY *.sln .
+# Copy csproj to restore dependencies
 COPY Demo/Demo.csproj ./Demo/
-RUN dotnet restore
+RUN dotnet restore Demo/Demo.csproj
 
 # Copy everything else and publish
 COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish Demo/Demo.csproj -c Release -o out
 
 # Stage 2: Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
