@@ -6,28 +6,49 @@ namespace Demo.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        // Dữ liệu mẫu lưu trong bộ nhớ (Memory) để dễ dàng demo
+        private static readonly List<WeatherForecast> Forecasts = new()
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 25, Summary = "Warm" },
+            new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = 30, Summary = "Hot" },
+            new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = 15, Summary = "Cool" },
+            new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)), TemperatureC = 8, Summary = "Chilly" }
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        // 1. Lấy toàn bộ danh sách dự báo thời tiết
+        // GET /weatherforecast
+        [HttpGet]
+        public ActionResult<IEnumerable<WeatherForecast>> GetAll()
         {
-            _logger = logger;
+            return Ok(Forecasts);
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        // 2. Lấy thông tin thời tiết theo index (vị trí trong danh sách)
+        // GET /weatherforecast/{index}
+        [HttpGet("{index}")]
+        public ActionResult<WeatherForecast> GetByIndex(int index)
         {
-            return Enumerable.Range(1, 4).Select(index => new WeatherForecast
+            if (index < 0 || index >= Forecasts.Count)
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                return NotFound(new { Message = $"Không tìm thấy dự báo ở vị trí {index}." });
+            }
+            return Ok(Forecasts[index]);
+        }
+
+        // 3. Thêm mới một dự báo thời tiết
+        // POST /weatherforecast
+        [HttpPost]
+        public ActionResult<WeatherForecast> Create([FromBody] WeatherForecast newForecast)
+        {
+            if (newForecast == null)
+            {
+                return BadRequest(new { Message = "Dữ liệu gửi lên không hợp lệ." });
+            }
+
+            Forecasts.Add(newForecast);
+            
+            // Trả về kết quả 201 Created kèm link đến API lấy chi tiết
+            return CreatedAtAction(nameof(GetByIndex), new { index = Forecasts.Count - 1 }, newForecast);
         }
     }
 }
