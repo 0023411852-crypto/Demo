@@ -24,7 +24,7 @@ namespace Demo.Tests
             
             // Đảm bảo danh sách không bị rỗng (null) và có chứa phần tử
             Assert.NotNull(forecasts);
-            Assert.NotEmpty(forecasts);
+            Assert.Empty(forecasts);
         }
     }
 }
