@@ -12,7 +12,7 @@ namespace Demo.Controllers
             new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 25, Summary = "Warm" },
             new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = 30, Summary = "Hot" },
             new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = 15, Summary = "Cool" },
-            new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)), TemperatureC = 8, Summary = "Chilly" }
+           
         };
 
         // 1. Lấy toàn bộ danh sách dự báo thời tiết
