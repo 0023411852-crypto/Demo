@@ -1,0 +1,22 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /app
+
+# Copy csproj to restore dependencies
+COPY Demo/Demo.csproj ./Demo/
+RUN dotnet restore Demo/Demo.csproj
+
+# Copy everything else and publish
+COPY . .
+RUN dotnet publish Demo/Demo.csproj -c Release -o out
+
+# Stage 2: Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+
+# Port configuration
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "Demo.dll"]

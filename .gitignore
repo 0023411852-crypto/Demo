@@ -1,0 +1,15 @@
+## Ignore Visual Studio & .NET build output
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+
+## Ignore IDE specific files
+.vs/
+.vscode/
+.idea/
+
+## Ignore Docker local state
+.dockerignore
+/out/
