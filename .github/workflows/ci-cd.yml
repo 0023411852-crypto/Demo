@@ -65,6 +65,8 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
+            type=ref,event=tag
+            type=semver,pattern={{version}}
             type=sha,format=short
             type=raw,value=latest,enable={{is_default_branch}}
 
@@ -111,3 +113,7 @@ jobs:
             docker pull ${{ env.IMAGE_NAME }}:latest
             IMAGE_NAME=${{ env.IMAGE_NAME }} IMAGE_TAG=latest docker compose up -d
             docker system prune -f
+            echo "Waiting for container to start..."
+            sleep 10
+            echo "Checking if application is healthy..."
+            curl -f http://localhost:8080/weatherforecast || exit 1

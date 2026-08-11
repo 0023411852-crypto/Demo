@@ -1,6 +1,9 @@
 # Hướng dẫn Thuyết trình & Giải thích Chi tiết Mã nguồn Dự án (Buổi 10)
 
-Tài liệu này được chia thành 2 phần chính: **Kịch bản Thuyết trình/Demo (Tự động hóa hoàn toàn trên Cloud)** và **Giải thích chi tiết tác dụng của từng file và dòng code**.
+Tài liệu này được chia thành 3 phần chính:
+1. **Kịch bản Thuyết trình/Demo** (Tự động hóa hoàn toàn trên Cloud)
+2. **Giải thích chi tiết tác dụng từng file trong dự án**
+3. **Giải thích chi tiết các bước (Steps) trong file CI/CD Workflow**
 
 ---
 
@@ -12,7 +15,7 @@ Tài liệu này được chia thành 2 phần chính: **Kịch bản Thuyết t
   > *"Xin chào thầy/cô và các bạn. Hôm nay em xin phép demo sản phẩm thực hành Buổi 10 với mục tiêu: **Tự động hóa hoàn toàn quy trình CI/CD**. Lập trình viên chỉ cần viết code và đẩy lên GitHub, toàn bộ các bước kiểm thử, đóng gói Docker và triển khai lên máy chủ Azure sẽ được thực hiện tự động trên đám mây bằng GitHub Actions mà không cần thao tác thủ công ở máy cá nhân."*
 
 ### Bước 2: Chỉnh sửa mã nguồn & Kích hoạt Pipeline (Khoảng 1.5 phút)
-* **Hành động**: Thực hiện một chỉnh sửa nhỏ trong file [WeatherForecastController.cs](DEMO1/Demo/Controllers/WeatherForecastController.cs) (ví dụ: sửa thông tin chữ hoặc thêm ghi chú), sau đó gõ các lệnh Git trong Terminal để push:
+* **Hành động**: Thực hiện một chỉnh sửa nhỏ trong file `WeatherForecastController.cs` (ví dụ: sửa thông tin chữ hoặc thêm ghi chú), sau đó gõ các lệnh Git trong Terminal để push:
   ```bash
   git add .
   git commit -m "demo: trigger automatic ci-cd pipeline"
@@ -46,27 +49,25 @@ Tài liệu này được chia thành 2 phần chính: **Kịch bản Thuyết t
 
 ### 1. File cấu hình dự án & Solution
 
-#### 📄 [Demo.sln](DEMO1/Demo.sln) (Solution File)
-* **Tác dụng**: Đây là file liên kết các dự án con lại với nhau trong một giải pháp (Solution). 
+#### 📄 Demo.sln (Solution File)
+* **Tác dụng**: File liên kết các dự án con lại với nhau trong một giải pháp (Solution). 
 * **Tác dụng của code**: Khai báo dự án Web API chính (`Demo\Demo.csproj`) và dự án kiểm thử (`Demo.Tests\Demo.Tests.csproj`) để bạn có thể biên dịch hoặc chạy test cho cả hai dự án cùng một lúc chỉ với một câu lệnh.
 
-#### 📄 [Demo/Demo.csproj](DEMO1/Demo/Demo.csproj) (Cấu hình Web API)
+#### 📄 Demo/Demo.csproj (Cấu hình Web API)
 * **Tác dụng**: Khai báo phiên bản framework và các thư viện sử dụng.
 * **Tác dụng của code**: 
   * `<TargetFramework>net8.0</TargetFramework>`: Chỉ định dự án chạy trên nền tảng .NET 8.0 mới nhất.
   * `<ImplicitUsings>enable</ImplicitUsings>`: Tự động import các namespace cơ bản của C# giúp code ngắn gọn hơn.
 
----
-
 ### 2. File Code xử lý API
 
-#### 📄 [Demo/Program.cs](DEMO1/Demo/Program.cs) (Khởi động ứng dụng)
+#### 📄 Demo/Program.cs (Khởi động ứng dụng)
 * **Tác dụng**: File đầu tiên được chạy khi ứng dụng khởi động. Nó khởi tạo Web Server và cấu hình các dịch vụ.
 * **Tác dụng của code**:
   * `builder.Services.AddControllers()`: Cung cấp các dịch vụ để hệ thống hiểu và ánh xạ các Controller xử lý API.
   * `app.MapControllers()`: Ánh xạ trực tiếp các Endpoint từ Controller (như `/weatherforecast`) để người dùng bên ngoài có thể gọi được qua giao thức HTTP.
 
-#### 📄 [Demo/Controllers/WeatherForecastController.cs](DEMO1/Demo/Controllers/WeatherForecastController.cs) (Xử lý Request)
+#### 📄 Demo/Controllers/WeatherForecastController.cs (Xử lý Request)
 * **Tác dụng**: Chứa các hàm xử lý logic khi client gọi vào API.
 * **Tác dụng của code**:
   * `[ApiController]`: Tự động kiểm tra dữ liệu gửi lên (nếu sai định dạng sẽ tự trả về lỗi 400 BadRequest).
@@ -74,11 +75,9 @@ Tài liệu này được chia thành 2 phần chính: **Kịch bản Thuyết t
   * `private static readonly List<WeatherForecast> Forecasts`: Cơ sở dữ liệu mẫu dạng danh sách (In-memory) để demo nhanh.
   * `[HttpGet] public ActionResult GetAll()`: Lấy toàn bộ danh sách thời tiết trả về dưới dạng JSON cùng mã thành công `200 OK`.
 
----
-
 ### 3. File Code kiểm thử (Unit Test)
 
-#### 📄 [Demo.Tests/WeatherForecastControllerTests.cs](DEMO1/Demo.Tests/WeatherForecastControllerTests.cs) (Chạy Test)
+#### 📄 Demo.Tests/WeatherForecastControllerTests.cs (Chạy Test)
 * **Tác dụng**: Viết các kịch bản kiểm tra logic code của API xem có chạy đúng như kỳ vọng không.
 * **Tác dụng của code**:
   * `[Fact]`: Đánh dấu hàm `LayToanBo_TraVeDanhSachKhongNullVaCoDuLieu` là một test case.
@@ -86,29 +85,51 @@ Tài liệu này được chia thành 2 phần chính: **Kịch bản Thuyết t
   * `Assert.IsType<OkObjectResult>(result.Result)`: Đảm bảo kết quả trả về từ API bắt buộc phải là mã HTTP 200 OK.
   * `Assert.NotEmpty(forecasts)`: Đảm bảo danh sách dữ liệu thời tiết trả về không được trống rỗng.
 
----
-
 ### 4. File Cấu hình Docker & Deployment
 
-#### 📄 [Dockerfile](DEMO1/Dockerfile) (Đóng gói ứng dụng)
+#### 📄 Dockerfile (Đóng gói ứng dụng)
 * **Tác dụng**: Tập hợp các bước để tạo thành một Container Image hoạt động độc lập không phụ thuộc hệ điều hành.
 * **Tác dụng của code**:
   * **Stage 1 (Build)**: Sử dụng Image SDK nặng (`mcr.microsoft.com/dotnet/sdk:8.0`) để chạy lệnh biên dịch `dotnet publish` nhằm tối ưu hóa và xuất bản mã nguồn ra thư mục `/app/out`.
   * **Stage 2 (Runtime)**: Chuyển sang sử dụng Image Runtime siêu nhẹ (`mcr.microsoft.com/dotnet/aspnet:8.0`) và chỉ sao chép kết quả đã build từ Stage 1 sang để chạy. Giúp giảm dung lượng file ảnh Docker từ ~800MB xuống chỉ còn ~200MB.
 
-#### 📄 [docker-compose.yml](DEMO1/docker-compose.yml) (Quản lý chạy container)
+#### 📄 docker-compose.yml (Quản lý chạy container)
 * **Tác dụng**: Cấu hình các tham số khi khởi chạy container trên máy chủ (Server Azure hoặc WSL 2).
 * **Tác dụng của code**:
   * `ports: - "8080:8080"`: Ánh xạ cổng `8080` của máy chủ vào cổng `8080` của container, giúp người dùng bên ngoài truy cập được API qua địa chỉ IP của Server Azure.
 
 ---
 
-### 5. File cấu hình GitHub Actions (CI/CD)
+## PHẦN 3: GIẢI THÍCH CHI TIẾT CÁC BƯỚC (STEPS) TRONG WORKFLOW CI/CD
 
-#### 📄 [.github/workflows/ci-cd.yml](DEMO1/.github/workflows/ci-cd.yml) (Tự động hóa luồng chạy)
-* **Tác dụng**: Định nghĩa quy trình tự động hóa các bước kiểm thử, build và triển khai.
-* **Tác dụng của code**:
-  * `on: push: branches: [main]`: Kích hoạt quy trình tự động mỗi khi có code mới đẩy lên nhánh `main`.
-  * `jobs: build`: Máy ảo chạy lệnh `dotnet test` tự động.
-  * `jobs: docker-build`: Chạy lệnh `docker build-push-action` để build ảnh và đẩy lên Docker Hub.
-  * `jobs: deploy`: Đăng nhập vào VPS bằng SSH thông qua các khóa bảo mật (Secrets), chạy lệnh kéo ảnh mới nhất từ Docker Hub về máy chủ Azure và khởi động lại container bằng Docker Compose.
+Dưới đây là chi tiết từng bước nhỏ (`steps:`) chạy trên máy ảo của GitHub Actions được định nghĩa trong file `ci-cd.yml`:
+
+### 1. Trong Job 1: Build Project (Biên dịch & Chạy Test)
+* **Step 1: Checkout repository** (`uses: actions/checkout@v4`)
+  * *Ý nghĩa*: Lấy toàn bộ mã nguồn của dự án từ GitHub tải xuống máy ảo của GitHub Actions để máy ảo có code làm việc.
+* **Step 2: Setup .NET Core** (`uses: actions/setup-dotnet@v4`)
+  * *Ý nghĩa*: Cài đặt bộ công cụ phát triển .NET SDK (phiên bản 8.0) lên máy ảo.
+* **Step 3: Restore dependencies** (`run: dotnet restore`)
+  * *Ý nghĩa*: Tải về tất cả các thư viện NuGet mà dự án của bạn khai báo cần sử dụng.
+* **Step 4: Build project** (`run: dotnet build ...`)
+  * *Ý nghĩa*: Biên dịch mã nguồn C# để kiểm tra xem code có bị lỗi cú pháp hay không.
+* **Step 5: Run tests** (`run: dotnet test ...`)
+  * *Ý nghĩa*: Tự động chạy tất cả các kịch bản kiểm thử (Unit Test) trong dự án `Demo.Tests` để xác minh logic code chạy đúng.
+
+### 2. Trong Job 2: Docker Build & Push (Đóng gói & Đẩy lên Docker Hub)
+* **Step 1: Checkout repository** (Lặp lại việc lấy code về máy ảo của Job 2).
+* **Step 2: Set up Docker Buildx** (`uses: docker/setup-buildx-action@v3`)
+  * *Ý nghĩa*: Thiết lập công cụ Buildx nâng cao của Docker để hỗ trợ tính năng lưu bộ nhớ đệm (caching), giúp các lần build sau chạy nhanh gấp nhiều lần.
+* **Step 3: Login to Docker Hub** (`uses: docker/login-action@v3`)
+  * *Ý nghĩa*: Đăng nhập vào tài khoản Docker Hub của bạn bằng cách dùng thông tin từ `secrets.DOCKER_USERNAME` và `secrets.DOCKER_PASSWORD`.
+* **Step 4: Extract Docker metadata** (`uses: docker/metadata-action@v5`)
+  * *Ý nghĩa*: Tự động tạo nhãn (tag) cho phiên bản ảnh như tag `:latest` (bản mới nhất) hoặc mã hash ngắn của commit git.
+* **Step 5: Build and Push Docker image** (`uses: docker/build-push-action@v5`)
+  * *Ý nghĩa*: Chạy lệnh đóng gói dựa trên file `Dockerfile` và tự động đẩy (Push) ảnh Docker lên Docker Hub.
+
+### 3. Trong Job 3: Deploy to Server (Triển khai lên máy chủ Azure)
+* **Step 1: Checkout repository** (Lấy code để có tệp `docker-compose.yml`).
+* **Step 2: Copy docker-compose.yml to Server** (`uses: appleboy/scp-action@v0.1.7`)
+  * *Ý nghĩa*: Sử dụng giao thức truyền file an toàn SCP để sao chép tệp `docker-compose.yml` từ GitHub sang thư mục `/opt/staging` trên máy chủ Azure.
+* **Step 3: Deploy to Server** (`uses: appleboy/ssh-action@v1.0.0`)
+  * *Ý nghĩa*: Kết nối SSH trực tiếp vào máy chủ Azure và chạy các dòng lệnh terminal từ xa để kéo ảnh mới từ Docker Hub về và khởi chạy lại container bằng Docker Compose.
