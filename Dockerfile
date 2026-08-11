@@ -1,21 +1,21 @@
-# Stage 1: Build
+# Bước 1: Biên dịch ứng dụng (Build)
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Copy csproj to restore dependencies
+# Sao chép tệp cấu hình dự án để khôi phục các thư viện (dependencies)
 COPY Demo/Demo.csproj ./Demo/
 RUN dotnet restore Demo/Demo.csproj
 
-# Copy everything else and publish
+# Sao chép toàn bộ mã nguồn còn lại và xuất bản ứng dụng (publish)
 COPY . .
 RUN dotnet publish Demo/Demo.csproj -c Release -o out
 
-# Stage 2: Runtime image
+# Bước 2: Khởi chạy ứng dụng (Runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-# Port configuration
+# Cấu hình cổng chạy ứng dụng ASP.NET Core
 ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
 
