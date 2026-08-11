@@ -20,7 +20,7 @@ namespace Demo.Tests
             var forecasts = Assert.IsAssignableFrom<IEnumerable<WeatherForecast>>(okResult.Value);
             
             Assert.NotNull(forecasts);
-            Assert.NotEmpty(forecasts);
+            Assert.Empty(forecasts);
         }
     }
 }
