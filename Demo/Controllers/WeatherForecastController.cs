@@ -9,8 +9,6 @@ namespace Demo.Controllers
         private static readonly List<WeatherForecast> Forecasts = new()
         {
             new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 25, Summary = "Ấm áp (Warm)" },
-            new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = 32, Summary = "Nóng bức (Hot)" },
-            new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = 15, Summary = "Mát mẻ (Cool)" },
             new WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)), TemperatureC = 8, Summary = "Lạnh giá (Chilly)" }
         };
 
